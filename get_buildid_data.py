@@ -1,34 +1,20 @@
-import requests
-from dotenv import dotenv_values
-config = dotenv_values(".env")  # take environment variables from .env.
+import json
+import os
+# from fetch_items import get_buildid_data
+# items = get_buildid_data()
 
-username = config.get("USERNAME")
-password = config.get("PASSWORD")
-API_BASE_URI = config.get("API_BASE_URI")
+# Get the current directory
+current_dir = os.getcwd()
+directory_name = 'data'
+file_name = "response.json"
+# Combine the directory path with the file name
+file_path = os.path.join(current_dir, directory_name, file_name)
 
-session = requests.Session()
+with open(file_path, 'r', encoding='utf-8') as file:
+    data = json.load(file)
 
-# Set the username and password for the session
-session.auth=(username,password)
+items = data.get('items')
 
-def get_buildid_data():
-    """
-    this function returns the items fetched from buildID
-    as a List containg a dictionaries.
-    """    
-    response = session.get(API_BASE_URI)
-    # Check the response
-    if response.status_code == 200:
-        # Request was successful
-        data = response.json()
-        items = data.get('items')
-        return items
-    else:
-        # Request failed
-        print("Request failed with status code:", response.status_code)
-
-
-items= get_buildid_data()
 
 def get_item_type_names():
     """
@@ -64,15 +50,16 @@ def get_item_status(epc_number):
     """
     this function returns an item's different statuses 
     from buildID using an EPC number.
-    """    
+    """
     # items= get_buildid_data()
     item = get_item(epc_number)
     item_status = {}
     for key, value in item.items():
-        if key in ['registrationStatus','constructionStatus','site']:
+        if key in ['registrationStatus', 'constructionStatus', 'site']:
             item_status[key] = value
-    
+
     print(item_status)
     return item_status
+
 
 get_item_status('E280689400005005879328DD')
