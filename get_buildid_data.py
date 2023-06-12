@@ -34,7 +34,7 @@ def get_item_type_names():
     return itemTypeNames
 
 
-def get_item(epc_number):
+def get_item_by_epc_number(epc_number):
     """
     this function returns an item from buildID using an EPC number.
     """
@@ -46,12 +46,12 @@ def get_item(epc_number):
             continue
 
 
-def get_item_status(epc_number):
+def get_item_status_by_epc_number(epc_number):
     """
     this function returns an item's different statuses 
     from buildID using an EPC number.
     """
-    item = get_item(epc_number)
+    item = get_item_by_epc_number(epc_number)
     item_statuses = {}
     for key, value in item.items():
         if key in ['registrationStatus', 'constructionStatus', 'site']:
@@ -61,5 +61,5 @@ def get_item_status(epc_number):
     return item_statuses
 
 
-get_item('E20042151D1064110103C989')
-get_item_status('E20042151D1064110103C989')
+get_item_by_epc_number('E20042151D1064110103C989')
+get_item_status_by_epc_number('E20042151D1064110103C989')

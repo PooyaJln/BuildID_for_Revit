@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 from dotenv import dotenv_values
-from fetch_items import get_buildid_data
+from fetch_items import get_itemlistexport
 
 config = dotenv_values(".env")  # take environment variables from .env.
 
@@ -22,6 +22,7 @@ os.makedirs(os.path.join(current_dir, directory_name), exist_ok=True)
 
 time_now = datetime.now()
 
+
 def response_file_check():
     # checking if "items.json" exists
     if os.path.exists(file_path):
@@ -33,13 +34,12 @@ def response_file_check():
             with open(file_path, "w", encoding='utf-8') as file:
                 # we update the file
                 print("updating the data ...")
-                items = get_buildid_data()
+                items = get_itemlistexport()
                 json.dump(items, file, ensure_ascii=False)
                 print("update finished.")
     else:  # if the file does not exists it is created and populated.
         print("items.txt does not exist.\nfetching the data ...")
         with open(file_path, "w", encoding='utf-8') as file:
-            items = get_buildid_data()
+            items = get_itemlistexport()
             json.dump(items, file, ensure_ascii=False)
             print("File created.")
-
