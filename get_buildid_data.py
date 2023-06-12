@@ -1,7 +1,10 @@
 import json
 import os
+from items_to_file import response_file_check
 # from fetch_items import get_buildid_data
 # items = get_buildid_data()
+
+response_file_check()
 
 # Get the current directory
 current_dir = os.getcwd()
@@ -20,8 +23,6 @@ def get_item_type_names():
     """
     this function returns a list of itemTypes from buildID.
     """
-    # items= get_buildid_data()
-
     itemTypeNames = []
     for item in items:
         if item.get('itemTypeName') in itemTypeNames:
@@ -37,10 +38,9 @@ def get_item(epc_number):
     """
     this function returns an item from buildID using an EPC number.
     """
-    # items= get_buildid_data()
     for item in items:
         if item.get('epc') == epc_number:
-            # print(item)
+            print(item)
             return item
         else:
             continue
@@ -51,15 +51,15 @@ def get_item_status(epc_number):
     this function returns an item's different statuses 
     from buildID using an EPC number.
     """
-    # items= get_buildid_data()
     item = get_item(epc_number)
-    item_status = {}
+    item_statuses = {}
     for key, value in item.items():
         if key in ['registrationStatus', 'constructionStatus', 'site']:
-            item_status[key] = value
+            item_statuses[key] = value
 
-    print(item_status)
-    return item_status
+    print(item_statuses)
+    return item_statuses
 
 
-get_item_status('E280689400005005879328DD')
+get_item('E20042151D1064110103C989')
+get_item_status('E20042151D1064110103C989')

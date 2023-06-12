@@ -22,22 +22,24 @@ os.makedirs(os.path.join(current_dir, directory_name), exist_ok=True)
 
 time_now = datetime.now()
 
-# checking if "items.json" exists
-if os.path.exists(file_path):
-    timestamp = os.path.getmtime(file_path)
-    # Convert the timestamp to a readable format
-    last_modified_time = datetime.fromtimestamp(timestamp)
-    time_difference = time_now - last_modified_time
-    if time_difference.total_seconds() > 900:  # if the time difference is bigger than 15 min
+def response_file_check():
+    # checking if "items.json" exists
+    if os.path.exists(file_path):
+        timestamp = os.path.getmtime(file_path)
+        # Convert the timestamp to a readable format
+        last_modified_time = datetime.fromtimestamp(timestamp)
+        time_difference = time_now - last_modified_time
+        if time_difference.total_seconds() > 900:  # if the time difference is bigger than 15 min
+            with open(file_path, "w", encoding='utf-8') as file:
+                # we update the file
+                print("updating the data ...")
+                items = get_buildid_data()
+                json.dump(items, file, ensure_ascii=False)
+                print("update finished.")
+    else:  # if the file does not exists it is created and populated.
+        print("items.txt does not exist.\nfetching the data ...")
         with open(file_path, "w", encoding='utf-8') as file:
-            # we update the file
-            print("updating the data ...")
             items = get_buildid_data()
             json.dump(items, file, ensure_ascii=False)
-            print("update finished.")
-else:  # if the file does not exists it is created and populated.
-    print("items.txt does not exist.\nfetching the data ...")
-    with open(file_path, "w", encoding='utf-8') as file:
-        items = get_buildid_data()
-        json.dump(items, file, ensure_ascii=False)
-        print("File created.")
+            print("File created.")
+
