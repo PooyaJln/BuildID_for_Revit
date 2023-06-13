@@ -8,6 +8,19 @@ API_BASE_URI = config.get("API_BASE_URI")
 project_id = config.get("projectId")
 
 
+def extract_EPC_in_error_message(error):
+    """
+    this function is run when the response contains errorMessage list
+    and extracts the EPC numbers that were not updated. 
+    """
+    start_index = error[0].find(":") + 1
+    end_index = error[0].find("No") - 1
+    result = error[0][start_index:end_index].strip()
+    result_list = result.split(",")
+    striped_result_list = [item.strip() for item in result_list]
+    return striped_result_list
+
+
 def booking_request(list_of_epc):
     """
     This function is accepts a list of epc numbers and send a post
@@ -37,15 +50,22 @@ def booking_request(list_of_epc):
                              json=payload, timeout=600)
 
     # Check the response status code
-    if response.status_code == 200:
+    if response.status_code == 200 and len(response.json().get('errorMessages')) == 0:
         # Request was successful
-        print(response.json())
-    else:
+        for item in list_of_epc:
+            print(f'{item} is successfully booked')
+    elif response.status_code == 200 or response.status_code == 400 and len(response.json().get('errorMessages')) == 1:
         # Request failed
-        print(f"Request failed with status code {response.status_code}")
+        response_json = response.json()
+        error_message_list = response_json.get('errorMessages')
+        unsuccessful_epc_list = extract_EPC_in_error_message(
+            error_message_list)
+        for item in unsuccessful_epc_list:
+            print(f"{item} was not updated")
 
 
-# booking_request(["E2004214C63060150A9B356F", "E2004215862060150A9B416E"])
+booking_request(["E2004214C63060150A9B356F", "E20042118260641101038FDE"])
+# booking_request(["E20042118260641101038FDE"])
 
 
 def make_availabe_request(list_of_epc):
